@@ -1,0 +1,31 @@
+version: "3.9"
+services:
+  traefik:
+    image: "traefik:v3.0"
+    container_name: "traefik"
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    restart: unless-stopped
+  auth-service:
+    build:
+      context: src/AuthService.Api
+      dockerfile: Dockerfile
+    container_name: "auth-service"
+    expose:
+      - "80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.auth-service.rule=Host(`localhost`) && PathPrefix(`/auth`)"
+      - "traefik.http.routers.auth-service.entrypoints=web"
+      - "traefik.http.routers.auth-service.service=auth-service"
+      - "traefik.http.services.auth-service.loadbalancer.server.port=80"
