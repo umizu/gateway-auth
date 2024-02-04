@@ -23,7 +23,7 @@ public class ItemBackgroundService : BackgroundService
             if (resp.IsSuccessStatusCode)
                 _logger.LogInformation("items response: {Content}", await resp.Content.ReadAsStringAsync());
 
-            await Task.Delay(TimeSpan.FromSeconds(30), stoppingToken);
+            await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
         }
 
     }

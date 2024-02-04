@@ -3,13 +3,17 @@ var app = builder.Build();
 
 app.MapPost("/items", (HttpContext ctx) =>
 {
-    // pretend an item object was passed in through the request body;
+    // pretend an item was passed in through the request body;
     var itemId = Guid.NewGuid();
 
     return Results.Ok(new
     {
-        Id = itemId,
-        UserId = ctx.Request.Headers["X-User-Id"].ToString()
+        itemId,
+        userInfo = new
+        {
+            id = ctx.Request.Headers["X-User-Id"].ToString(),
+            roles = ctx.Request.Headers["X-User-Roles"].ToString()
+        }
     });
 });
 

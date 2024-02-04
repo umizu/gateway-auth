@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using System.Text;
+using AuthService.Api;
 using AuthService.Api.Contracts;
 using AuthService.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -23,10 +25,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 builder.Services.AddAuthorization(cfg =>
 {
-    cfg.AddPolicy("User", policy =>
+    cfg.AddPolicy("Bearer", policy =>
     {
-        policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme);
-        policy.RequireAuthenticatedUser();
+        policy.AddAuthenticationSchemes(JwtBearerDefaults.AuthenticationScheme)
+            .RequireAuthenticatedUser();
     });
 });
 
@@ -35,6 +37,8 @@ builder.Services.AddSingleton<UserService>()
     .AddSingleton<AuthenticationService>();
 
 var app = builder.Build();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapPost("/auth/login", (
     LoginRequest req,
@@ -56,8 +60,12 @@ app.MapGet("/auth/forward-auth",
     (HttpContext ctx,
     ILogger<Program> logger) =>
 {
-    ctx.Response.Headers.Append("X-User-Id", "sample user id"); // todo: get user id from token
+    var userId = ctx.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+    var userRoles = ctx.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
+
+    ctx.Response.Headers.Append("X-User-Id", userId);
+    ctx.Response.Headers.Append("X-User-Roles", string.Join(" ", userRoles));
     return Results.Ok();
-}).RequireAuthorization("User");
+}).RequireAuthorization("Bearer");
 
 app.Run();

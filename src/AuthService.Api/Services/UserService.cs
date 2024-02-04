@@ -12,6 +12,8 @@ public class UserService
     {
         new() { Id = Guid.NewGuid(), Username = "mod", Password = "mod", Roles = ["mod"] },
         new() { Id = Guid.NewGuid(), Username = "user", Password = "user"},
+        new() { Id = Guid.NewGuid(), Username = "supporter", Password = "supporter", Roles = ["supporter", "pioneer"]},
+
     };
 
     public User? GetByUsername(string username)

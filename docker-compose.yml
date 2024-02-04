@@ -17,8 +17,8 @@ services:
     build:
       context: src/AuthService.Api
       dockerfile: Dockerfile
-    expose:
-      - "80"
+    ports:
+      - "8080:80" # for debugging
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
@@ -28,15 +28,15 @@ services:
       - "traefik.http.routers.auth-service.entrypoints=web"
       - "traefik.http.services.auth-service.loadbalancer.server.port=80"
       - "traefik.http.middlewares.simple-auth.forwardauth.address=http://auth-service/auth/forward-auth"
-      - "traefik.http.middlewares.simple-auth.forwardauth.authResponseHeaders=X-User-Id" # forwarded to the downstream service
+      - "traefik.http.middlewares.simple-auth.forwardauth.authResponseHeaders=X-User-Id, X-User-Roles" # forwarded to the downstream service
     depends_on:
       - traefik
   item-service:
     build:
       context: src/ItemService.Api
       dockerfile: Dockerfile
-    expose:
-      - "80"
+    ports:
+      - "8081:80" # for debugging
     environment:
       - ASPNETCORE_URLS=http://+:80
       - ASPNETCORE_ENVIRONMENT=Development
