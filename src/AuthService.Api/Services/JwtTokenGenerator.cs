@@ -8,6 +8,13 @@ namespace AuthService.Api.Services;
 
 public class JwtTokenGenerator
 {
+    private readonly IConfiguration _config;
+
+    public JwtTokenGenerator(IConfiguration config)
+    {
+        _config = config;
+    }
+
     public string GenerateToken(Guid userId, string username, List<string> roles)
     {
         var claims = new List<Claim>
@@ -20,14 +27,14 @@ public class JwtTokenGenerator
             roles.Add("user");
         claims.AddRange(roles.Select(role => new Claim("role", role)));
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("fvYxIAq9nrNIMNRh8E5Sh8kmvOJXfPjw"));
+        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Secret"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
-            issuer: "auth_service",
-            audience: "gateway_auth_demo",
+            issuer: _config["Jwt:Issuer"]!,
+            audience: _config["Jwt:Audience"]!,
             claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
+            expires: DateTime.Now.AddSeconds(int.Parse(_config["Jwt:ExpiresIn"]!)),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);

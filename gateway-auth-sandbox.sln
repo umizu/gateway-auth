@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService.Api", "src\Auth
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ItemService.Api", "src\ItemService.Api\ItemService.Api.csproj", "{7E3EA5CC-5884-481F-B4F1-744A69A71C67}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RecommendationService.Api", "src\RecommendationService.Api\RecommendationService.Api.csproj", "{9FB22F6E-7F63-47B2-BFD3-BEB2FD67558F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -26,9 +28,14 @@ Global
 		{7E3EA5CC-5884-481F-B4F1-744A69A71C67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7E3EA5CC-5884-481F-B4F1-744A69A71C67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7E3EA5CC-5884-481F-B4F1-744A69A71C67}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9FB22F6E-7F63-47B2-BFD3-BEB2FD67558F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9FB22F6E-7F63-47B2-BFD3-BEB2FD67558F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9FB22F6E-7F63-47B2-BFD3-BEB2FD67558F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9FB22F6E-7F63-47B2-BFD3-BEB2FD67558F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{69766B6D-4FE5-48F4-854D-6F694FC1D4D3} = {DD187A9A-D85D-46DC-ACFC-95214C293896}
 		{7E3EA5CC-5884-481F-B4F1-744A69A71C67} = {DD187A9A-D85D-46DC-ACFC-95214C293896}
+		{9FB22F6E-7F63-47B2-BFD3-BEB2FD67558F} = {DD187A9A-D85D-46DC-ACFC-95214C293896}
 	EndGlobalSection
 EndGlobal

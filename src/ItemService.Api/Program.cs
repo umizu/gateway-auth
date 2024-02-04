@@ -9,7 +9,15 @@ app.MapPost("/items", (HttpContext ctx) =>
     return Results.Ok(new
     {
         Id = itemId,
-        UserId = ctx.Request.Headers["X-User-Id"]
+        UserId = ctx.Request.Headers["X-User-Id"].ToString()
+    });
+});
+
+app.MapGet("/items", (HttpContext ctx) =>
+{
+    return Results.Ok(new
+    {
+        items = "...items"
     });
 });
 
