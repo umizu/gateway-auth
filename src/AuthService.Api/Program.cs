@@ -25,4 +25,13 @@ app.MapPost("/auth/login", (
     });
 });
 
+app.MapGet("/auth/forward-auth",
+    (HttpContext ctx,
+    ILogger<Program> logger) =>
+{
+    logger.LogInformation("Authorize request received");
+    ctx.Request.Headers.Append("X-User-Id", "sample user id"); // todo: get user id from token
+    return Results.Ok();
+});
+
 app.Run();

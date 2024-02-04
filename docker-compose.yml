@@ -7,12 +7,13 @@ services:
       - "--providers.docker=true"
       - "--providers.docker.exposedbydefault=false"
       - "--entrypoints.web.address=:80"
+      - "--log.level=DEBUG"
+      
     ports:
       - "80:80"
       - "443:443"
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
-    restart: unless-stopped
   auth-service:
     build:
       context: src/AuthService.Api
@@ -29,3 +30,24 @@ services:
       - "traefik.http.routers.auth-service.entrypoints=web"
       - "traefik.http.routers.auth-service.service=auth-service"
       - "traefik.http.services.auth-service.loadbalancer.server.port=80"
+      - "traefik.http.middlewares.simple-auth.forwardauth.address=http://auth-service/auth/forward-auth"
+      - "traefik.http.middlewares.simple-auth.forwardauth.authResponseHeaders=X-User-Id" # forwarded to the downstream service
+      
+  item-service:
+    build:
+      context: src/ItemService.Api
+      dockerfile: Dockerfile
+    container_name: "item-service"
+    expose:
+      - "80"
+    environment:
+      - ASPNETCORE_URLS=http://+:80
+      - ASPNETCORE_ENVIRONMENT=Development
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.item-service.rule=Host(`localhost`) && PathPrefix(`/items`)"
+      - "traefik.http.routers.item-service.entrypoints=web"
+      - "traefik.http.routers.item-service.service=item-service"
+      - "traefik.http.services.item-service.loadbalancer.server.port=80"
+      - "traefik.http.routers.item-service.middlewares=simple-auth"
+      
