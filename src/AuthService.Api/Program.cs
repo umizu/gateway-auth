@@ -2,6 +2,7 @@ using System.Security.Claims;
 using System.Text;
 using AuthService.Api;
 using AuthService.Api.Contracts;
+using AuthService.Api.Middlewares;
 using AuthService.Api.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -39,6 +40,7 @@ builder.Services.AddSingleton<UserService>()
 var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<InjectUserContextMiddleware>();
 
 app.MapPost("/auth/login", (
     LoginRequest req,
@@ -60,11 +62,6 @@ app.MapGet("/auth/forward-auth",
     (HttpContext ctx,
     ILogger<Program> logger) =>
 {
-    var userId = ctx.User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
-    var userRoles = ctx.User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value);
-
-    ctx.Response.Headers.Append("X-User-Id", userId);
-    ctx.Response.Headers.Append("X-User-Roles", string.Join(" ", userRoles));
     return Results.Ok();
 }).RequireAuthorization("Bearer");
 
